@@ -1,0 +1,36 @@
+stages:
+  download:
+    cmd: python source/download.py
+    deps:
+    - source/download.py
+    params:
+    - donwload.year
+    - download.n_loc
+    outs:
+    - data/weatherdata.csv
+  prepare:
+    cmd: python source/prepapre.py data/weatherdata.csv data/groundTruthData.csv
+    deps:
+    - data/weatherdata.csv
+    - source/prepare.py
+    params:
+    - prepare.seed
+    outs:
+    - data/groundTruthData.csv
+  process:
+    cmd: python source/process.py data/weatherdata.csv data/predictedData.csv
+    deps:
+    - data/weatherdata.csv
+    - source/process.py
+    outs:
+    - data/predictedData.csv
+  evaluate:
+    cmd: python sourceevaluate.py data/groundTruthData.csv data/predictedData.csv
+    deps:
+    - data/groundTruthData.csv
+    - data/predictedData.csv
+    - source/evaluate.py
+    outs:
+    - data/R2_score.txt
+    metrics:
+    - data/metrics.json
